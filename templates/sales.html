@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Sales - MediCare Pharmacy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-shopping-cart text-primary me-2"></i>
+        MediCare Pharmacy - Sales Management
+    </h1>
+</div>
+<!-- Rest of sales.html content remains the same -->
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">New Sale</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="drug_id" class="form-label">Select Drug</label>
+                        <select class="form-select" id="drug_id" name="drug_id" required>
+                            <option value="">Choose a drug...</option>
+                            {% for drug in drugs %}
+                            <option value="{{ drug.id }}" data-price="{{ drug.selling_price }}" data-stock="{{ drug.quantity }}">
+                                {{ drug.name }} - Stock: {{ drug.quantity }} - Price: ${{ "%.2f"|format(drug.selling_price) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Unit Price</label>
+                        <input type="text" class="form-control" id="unit_price" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Total Price</label>
+                        <input type="text" class="form-control" id="total_price" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Available Stock</label>
+                        <input type="text" class="form-control" id="available_stock" readonly>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-cash-register"></i> Process Sale
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Sales History</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Drug</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                                <th>Staff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>{{ sale.sale_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ sale.drug.name }}</td>
+                                <td>{{ sale.quantity }}</td>
+                                <td>${{ "%.2f"|format(sale.unit_price) }}</td>
+                                <td>${{ "%.2f"|format(sale.total_price) }}</td>
+                                <td>{{ sale.staff_name }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No sales recorded yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#drug_id').change(function() {
+        var selectedOption = $(this).find('option:selected');
+        var price = selectedOption.data('price');
+        var stock = selectedOption.data('stock');
+        
+        $('#unit_price').val('$' + price.toFixed(2));
+        $('#available_stock').val(stock);
+        $('#quantity').attr('max', stock);
+        
+        // Calculate total price
+        var quantity = $('#quantity').val();
+        if (quantity) {
+            $('#total_price').val('$' + (price * quantity).toFixed(2));
+        }
+    });
+    
+    $('#quantity').on('input', function() {
+        var price = parseFloat($('#unit_price').val().replace('$', '')) || 0;
+        var quantity = $(this).val();
+        var stock = parseInt($('#available_stock').val()) || 0;
+        
+        if (quantity > stock) {
+            $(this).addClass('is-invalid');
+            $('#total_price').val('Quantity exceeds stock');
+        } else {
+            $(this).removeClass('is-invalid');
+            $('#total_price').val('$' + (price * quantity).toFixed(2));
+        }
+    });
+});
+</script>
+{% endblock %}

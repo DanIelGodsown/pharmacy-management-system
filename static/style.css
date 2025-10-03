@@ -1,0 +1,64 @@
+/* MediCare Pharmacy Branding */
+:root {
+    --medicare-primary: #2c5aa0;
+    --medicare-secondary: #34a853;
+    --medicare-accent: #ff6b35;
+}
+
+/* Update navbar color for MediCare */
+.navbar-dark.bg-primary {
+    background-color: var(--medicare-primary) !important;
+    background: linear-gradient(135deg, var(--medicare-primary) 0%, #1e3d6f 100%) !important;
+}
+
+/* MediCare logo styling */
+.pharmacy-brand {
+    border-bottom: 2px solid var(--medicare-primary);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pharmacy-logo {
+    color: var(--medicare-primary);
+}
+
+/* Custom buttons with MediCare colors */
+.btn-primary {
+    background-color: var(--medicare-primary);
+    border-color: var(--medicare-primary);
+    background: linear-gradient(135deg, var(--medicare-primary) 0%, #1e3d6f 100%);
+}
+
+.btn-primary:hover {
+    background-color: #254a8a;
+    border-color: #254a8a;
+}
+
+/* MediCare footer */
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Dashboard card accents for MediCare */
+.card.bg-primary { 
+    background: linear-gradient(135deg, var(--medicare-primary) 0%, #1e3d6f 100%) !important; 
+}
+.card.bg-success { 
+    background: linear-gradient(135deg, var(--medicare-secondary) 0%, #2d8c47 100%) !important; 
+}
+.card.bg-warning { 
+    background: linear-gradient(135deg, var(--medicare-accent) 0%, #e55a2b 100%) !important; 
+}
+
+/* Sidebar active state for MediCare */
+.sidebar .nav-link.active {
+    color: var(--medicare-primary) !important;
+    background-color: #e3f2fd;
+    border-left-color: var(--medicare-primary);
+}
+
+.sidebar .nav-link:hover {
+    color: var(--medicare-primary);
+    background-color: #f8f9fa;
+}

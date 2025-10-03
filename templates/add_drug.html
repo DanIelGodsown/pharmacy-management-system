@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Add New Drug</h1>
+    <a href="{{ url_for('drugs') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Drugs
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Drug Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <input type="text" class="form-control" id="category" name="category" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="batch_no" class="form-label">Batch Number *</label>
+                            <input type="text" class="form-control" id="batch_no" name="batch_no" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="manufacturer" class="form-label">Manufacturer *</label>
+                            <input type="text" class="form-control" id="manufacturer" name="manufacturer" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="quantity" class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cost_price" class="form-label">Cost Price ($) *</label>
+                            <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="selling_price" class="form-label">Selling Price ($) *</label>
+                            <input type="number" step="0.01" class="form-control" id="selling_price" name="selling_price" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="expiry_date" class="form-label">Expiry Date *</label>
+                        <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Add Drug
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-info-circle text-primary"></i> Ensure batch numbers are unique</li>
+                    <li class="mb-2"><i class="fas fa-info-circle text-primary"></i> Set appropriate expiry dates</li>
+                    <li class="mb-2"><i class="fas fa-info-circle text-primary"></i> Maintain proper pricing margins</li>
+                    <li class="mb-2"><i class="fas fa-info-circle text-primary"></i> Use consistent category names</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

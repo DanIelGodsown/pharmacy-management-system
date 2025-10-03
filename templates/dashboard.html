@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - MediCare Pharmacy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-tachometer-alt text-primary me-2"></i>
+        MediCare Pharmacy Dashboard
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <span class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-calendar me-1"></i> {{ today.strftime('%B %d, %Y') }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Welcome Alert -->
+<div class="alert alert-info">
+    <h6 class="alert-heading">
+        <i class="fas fa-hospital-user me-2"></i>Welcome to MediCare Pharmacy Management System
+    </h6>
+    Welcome back, {{ session.username }}! Here's your pharmacy overview for today.
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ total_drugs }}</h4>
+                        <p class="card-text">Total Drugs</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-pills fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ low_stock_drugs }}</h4>
+                        <p class="card-text">Low Stock</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ expiring_soon }}</h4>
+                        <p class="card-text">Expiring Soon</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-dark">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ expired_drugs }}</h4>
+                        <p class="card-text">Expired</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-skull-crossbones fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-receipt me-2"></i>Recent Sales - MediCare Pharmacy
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_sales %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Drug</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Staff</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in recent_sales %}
+                            <tr>
+                                <td>{{ sale.drug.name }}</td>
+                                <td>{{ sale.quantity }}</td>
+                                <td>${{ "%.2f"|format(sale.total_price) }}</td>
+                                <td>{{ sale.staff_name }}</td>
+                                <td>{{ sale.sale_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No recent sales for MediCare Pharmacy.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('sales') }}" class="btn btn-primary">
+                        <i class="fas fa-cash-register me-2"></i> New Sale
+                    </a>
+                    {% if session.role == 'admin' %}
+                    <a href="{{ url_for('add_drug') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i> Add New Drug
+                    </a>
+                    <a href="{{ url_for('purchases') }}" class="btn btn-info">
+                        <i class="fas fa-truck me-2"></i> Record Purchase
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('drugs') }}" class="btn btn-warning">
+                        <i class="fas fa-search me-2"></i> View Inventory
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bell me-2"></i>Pharmacy Alerts
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="alerts-container">
+                    {% if low_stock_drugs > 0 %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ low_stock_drugs }} drugs are low in stock at MediCare Pharmacy
+                    </div>
+                    {% endif %}
+                    {% if expiring_soon > 0 %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-clock me-2"></i>
+                        {{ expiring_soon }} drugs are expiring soon
+                    </div>
+                    {% endif %}
+                    {% if expired_drugs > 0 %}
+                    <div class="alert alert-dark">
+                        <i class="fas fa-skull-crossbones me-2"></i>
+                        {{ expired_drugs }} drugs have expired
+                    </div>
+                    {% endif %}
+                    {% if low_stock_drugs == 0 and expiring_soon == 0 and expired_drugs == 0 %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        All systems normal at MediCare Pharmacy
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
